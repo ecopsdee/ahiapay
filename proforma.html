@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Free CBN Form M Proforma Invoice Generator | AhiaPay</title>
+  <meta name="description" content="Calculate FOB, Sea Freight, and generate accurate Proforma Invoices required for Central Bank of Nigeria (CBN) Form M processing. 100% free tool.">
+  <meta name="keywords" content="Form M proforma invoice, CBN Form M, import invoice Nigeria, FOB calculator, AhiaPay proforma">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- SEO Open Graph Tags -->
+  <meta property="og:title" content="Free Form M Proforma Invoice Generator | AhiaPay">
+  <meta property="og:description" content="Create compliant proforma invoices for Nigerian imports. Easily calculate FOB and Sea Freight for your Form M application.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.ahiapay.com.ng/proforma.html">
+
+  <link rel="canonical" href="https://www.ahiapay.com.ng/proforma.html" />
+
+  <!-- Schema Markup (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AhiaPay Form M Proforma Generator",
+    "applicationCategory": "BusinessApplication",
+    "description": "Tool for Nigerian importers to generate Proforma Invoices with correct shipping, trade terms, and FOB variables for CBN Form M applications."
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="app-header">
+    <div class="header-content">
+      <a href="index.html" style="text-decoration: none; color: inherit;">
+        <div class="logo">
+          <img src="favicon.ico" alt="AhiaPay Logo">
+          <span>Ahia<strong>Pay</strong></span>
+        </div>
+      </a>
+      <div class="step-indicator" id="stepIndicator">
+        Step <span id="stepCurrent">1</span> of 7
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 14.28%"></div>
+    </div>
+  </header>
+
+  <!-- ===================== WIZARD ===================== -->
+  <main class="wizard">
+
+    <!-- =========== STEP 1: Company Images =========== -->
+    <section class="step active" data-step="1">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-building"></i></div>
+        <h1 style="font-size: 1.6rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; letter-spacing: -0.5px;">Your Company Details</h1>
+        <p class="step-description">Enter your company's name and address to appear on the invoice header.</p>
+
+        <div class="form-group">
+          <label for="companyName">Company Name <span class="required">*</span></label>
+          <p class="help-text">Your company name to appear at the top of the invoice.</p>
+          <input type="text" id="companyName" placeholder="e.g. Acme Corporation" required>
+        </div>
+
+        <div class="form-group">
+          <label for="companyAddress">Company Address <span class="required">*</span></label>
+          <p class="help-text">Your company address to appear at the top of the invoice.</p>
+          <textarea id="companyAddress" rows="3" placeholder="e.g. 123 Business Rd, Lagos, Nigeria" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Company Stamp / Seal (Optional)</label>
+          <p class="help-text">This image will appear at the bottom-right of your invoice.</p>
+          <div class="upload-area" id="stampUpload">
+            <div class="upload-placeholder">
+              <i class="fas fa-stamp"></i>
+              <span>Tap to upload stamp image</span>
+              <small>JPG, PNG — your company seal</small>
+            </div>
+            <img class="upload-preview" id="stampPreviewImg" alt="Stamp preview">
+            <button class="upload-remove" id="stampRemove" title="Remove image"><i class="fas fa-times"></i></button>
+            <input type="file" id="stampFile" accept="image/*" hidden>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== STEP 2: Invoice Details =========== -->
+    <section class="step" data-step="2">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+        <h2>Invoice Details</h2>
+        <p class="step-description">Basic information about this invoice</p>
+
+        <div class="form-group">
+          <label for="invoiceNo">Invoice Number <span class="required">*</span></label>
+          <input type="text" id="invoiceNo" placeholder="e.g. 109-002-C" required>
+        </div>
+
+
+
+        <div class="form-group">
+          <label for="invoiceDate">Invoice Date <span class="required">*</span></label>
+          <input type="date" id="invoiceDate" required>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== STEP 3: Buyer Details =========== -->
+    <section class="step" data-step="3">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-user-tie"></i></div>
+        <h2>Buyer Details</h2>
+        <p class="step-description">Who is this invoice for?</p>
+
+        <div class="form-group">
+          <label for="buyerName">Company Name <span class="required">*</span></label>
+          <input type="text" id="buyerName" placeholder="e.g. Lakoview Global Services LTD" required>
+        </div>
+
+        <div class="form-group">
+          <label for="buyerAddress">Address <span class="required">*</span></label>
+          <textarea id="buyerAddress" rows="3" placeholder="e.g. Plot 3299 Amuwo Ind Estate,&#10;Amuwo Odofin Lagos State NIGERIA" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="buyerPhone">Phone</label>
+            <input type="tel" id="buyerPhone" placeholder="e.g. 08035068068">
+          </div>
+          <div class="form-group">
+            <label for="buyerEmail">Email</label>
+            <input type="email" id="buyerEmail" placeholder="e.g. buyer@email.com">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== STEP 4: Products / Line Items =========== -->
+    <section class="step" data-step="4">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-boxes-stacked"></i></div>
+        <h2>Products</h2>
+        <p class="step-description">Add the goods for this invoice</p>
+
+        <div id="lineItemsContainer">
+          <!-- Line item cards rendered by JS -->
+        </div>
+
+        <button class="btn-add-item" id="addItemBtn">
+          <i class="fas fa-plus-circle"></i> Add Another Product
+        </button>
+      </div>
+    </section>
+
+    <!-- =========== STEP 5: Shipping & Trade =========== -->
+    <section class="step" data-step="5">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-ship"></i></div>
+        <h2>Shipping & Trade</h2>
+        <p class="step-description">Shipping costs and trade details</p>
+
+        <div class="summary-card">
+          <div class="summary-label">Total FOB (auto-calculated)</div>
+          <div class="summary-value" id="fobDisplay">$0.00</div>
+        </div>
+
+        <div class="form-group">
+          <label for="fobLocation">FOB Location</label>
+          <input type="text" id="fobLocation" placeholder="e.g. CHINA" value="CHINA">
+        </div>
+
+        <div class="form-group">
+          <label for="seaFreight">Total Sea Freight (USD) <span class="required">*</span></label>
+          <input type="number" id="seaFreight" placeholder="e.g. 9000" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="freightOrigin">Freight Origin</label>
+          <input type="text" id="freightOrigin" placeholder="e.g. CHINA" value="CHINA">
+        </div>
+
+        <div class="form-group">
+          <label for="destPort">Destination Port <span class="required">*</span></label>
+          <select id="destPort" required>
+            <option value="">Select a port...</option>
+            <option value="ONNE P/H">Onne Port, Port Harcourt</option>
+            <option value="APAPA LAGOS">Apapa Port, Lagos</option>
+            <option value="TIN CAN ISLAND LAGOS">Tin Can Island, Lagos</option>
+            <option value="CALABAR">Calabar Port</option>
+            <option value="WARRI">Warri Port</option>
+            <option value="KANO (ICD)">Kano Inland Container Depot</option>
+            <option value="KADUNA (ICD)">Kaduna Inland Container Depot</option>
+            <option value="JOS (ICD)">Jos Inland Container Depot</option>
+          </select>
+        </div>
+
+        <div class="summary-card highlight">
+          <div class="summary-label">Total C&F (auto-calculated)</div>
+          <div class="summary-value" id="cfDisplay">$0.00</div>
+        </div>
+
+        <hr class="section-divider">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="countryOrigin">Country of Origin <span class="required">*</span></label>
+            <input type="text" id="countryOrigin" placeholder="e.g. CHINA" value="CHINA" required>
+          </div>
+          <div class="form-group">
+            <label for="countrySupply">Country of Supply <span class="required">*</span></label>
+            <input type="text" id="countrySupply" placeholder="e.g. CHINA" value="CHINA" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="certNo">Product Certification No</label>
+          <input type="text" id="certNo" placeholder="e.g. CSIC20NPR1250">
+        </div>
+
+        <div class="form-group">
+          <label for="partialShipment">Partial Shipment</label>
+          <select id="partialShipment">
+            <option value="ALLOWED">ALLOWED</option>
+            <option value="NOT ALLOWED">NOT ALLOWED</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== STEP 6: Banking Details =========== -->
+    <section class="step" data-step="6">
+      <div class="step-content">
+        <div class="step-icon"><i class="fas fa-university"></i></div>
+        <h2>Banking Details</h2>
+        <p class="step-description">Beneficiary bank information for payment</p>
+
+        <div class="form-group">
+          <label for="beneficiaryName">Beneficiary Name <span class="required">*</span></label>
+          <input type="text" id="beneficiaryName" placeholder="e.g. TEAM-GO I & E CO., LTD.(RUIAN)" required>
+        </div>
+
+        <div class="form-group">
+          <label for="beneficiaryBank">Beneficiary Bank <span class="required">*</span></label>
+          <input type="text" id="beneficiaryBank" placeholder="e.g. CHINA CONSTRUCTION BANK ZHEJIANG BRANCH" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bankAccountNo">Bank Account Number <span class="required">*</span></label>
+          <input type="text" id="bankAccountNo" placeholder="e.g. 33050162613500000360" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bankAddress">Bank Address</label>
+          <input type="text" id="bankAddress" placeholder="e.g. ZHEJIANG BRANCH">
+        </div>
+
+        <div class="form-group">
+          <label for="bankSwift">Bank SWIFT Code <span class="required">*</span></label>
+          <input type="text" id="bankSwift" placeholder="e.g. PCBCCNBJZJW" required>
+        </div>
+
+        <div class="form-group">
+          <label for="intermediaryBank">Intermediary Bank</label>
+          <input type="text" id="intermediaryBank" placeholder="e.g. CITIBANK N.A., NEW YORK">
+        </div>
+
+        <div class="form-group">
+          <label for="intermediarySwift">Intermediary Bank SWIFT</label>
+          <input type="text" id="intermediarySwift" placeholder="e.g. CITIUS33">
+        </div>
+      </div>
+    </section>
+
+    <!-- =========== STEP 7: Preview & Send =========== -->
+    <section class="step" data-step="7">
+      <div class="step-content preview-step">
+        <div class="step-icon"><i class="fas fa-eye"></i></div>
+        <h2 style="font-size: 1.6rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 6px; letter-spacing: -0.5px;">Preview & Send Invoice</h2>
+        <p class="step-description">Review your generated form m invoice, then securely send it to your email</p>
+
+        <div class="preview-wrapper">
+          <div class="invoice-preview" id="invoicePreview">
+            <!-- Invoice rendered by JS -->
+          </div>
+        </div>
+
+        <div class="send-section">
+          <div class="form-group">
+            <label for="recipientEmail">Your Email Address <span class="required">*</span></label>
+            <p class="help-text">We'll send the invoice PDF to this email</p>
+            <input type="email" id="recipientEmail" placeholder="Enter your email address" required>
+          </div>
+
+          <button class="btn-send" id="sendBtn">
+            <i class="fas fa-paper-plane"></i> Generate Invoice
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== NAVIGATION FOOTER ===================== -->
+  <footer class="wizard-footer">
+    <button class="btn-nav btn-back" id="backBtn" disabled>
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button class="btn-nav btn-next" id="nextBtn">
+      Next <i class="fas fa-arrow-right"></i>
+    </button>
+  </footer>
+
+  <!-- ===================== LOADING OVERLAY ===================== -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p id="loadingMessage">Generating your invoice...</p>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST NOTIFICATION ===================== -->
+  <div class="toast" id="toast">
+    <i class="toast-icon"></i>
+    <span class="toast-message"></span>
+  </div>
+
+  <script type="module" src="proforma.js"></script>
+</body>
+</html>
